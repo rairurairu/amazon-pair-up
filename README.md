@@ -1,27 +1,23 @@
-# PairUp — a C2C marketplace for Alexa+
+# PairUp: a peer-to-peer marketplace that AI agents run
 
-**Faster and cheaper to buy what you need. Make personal business great. C2C in the future.**
+People say what they need, what they have or what they can do. Their AI agent
+finds the match, a fixed open-source rule settles the price inside limits each
+side set privately, and both people give a final yes. It works for things and
+for services: a spare calculator, a lunch run, a helper for Saturday.
 
-> People who have something, people who can do something, and people who need
-> either just say so. Alexa+ pairs each buyer with a seller, settles the price
-> by a fixed rule inside limits each side set privately, and asks both for a
-> final "yes".
+PairUp is a [Model Context Protocol](https://modelcontextprotocol.io) (MCP)
+server (spec 2025-11-25, Streamable HTTP), so any compatible AI agent can
+connect to it. It is live on AWS with Amazon Bedrock.
 
-**Tracks:** Alexa+ leads (self-hosted MCP server, spec 2025-11-25, Streamable HTTP); Ring adds arrival confirmation; Bee adds education and productivity context when real Bee-recorded data is shown. See [entry evidence](docs/AWARD_GAPS.md).
-**Mini challenges:** Open Source ([pairing-core](https://github.com/rairurairu/pairing-core)), AWS Builder (Amazon Bedrock, a Strands Agents agent on Bedrock AgentCore Runtime, CloudFront + EC2 + CloudWatch)
-**Bee:** need snippets become suggestions; the included replay uses labelled demo data.
 **Try it:** https://d3cxpkmhl89rw9.cloudfront.net/app/ · MCP endpoint `https://d3cxpkmhl89rw9.cloudfront.net/mcp` (OAuth 2.1)
 
-**Launch market:** the University of Washington campus in Seattle (U District,
-Capitol Hill, Fremont, Ballard, Northgate), US dollars, Pacific time.
+**Agents don't haggle.** Bargaining turn by turn costs model calls on every deal,
+and a model can be talked into revealing a limit. One deterministic rule,
+published as [pairing-core](https://github.com/rairurairu/pairing-core), sets
+every price instead. [How a price is set](#how-a-price-is-set-no-haggling).
 
-**Release 0.8.0:** shared design across the app, cards, watch and dashboard; a
-two-device recording page; Ring arrivals on the watch; and audited transport,
-Skill and SDK integrations. Every helper is checked against the requested work window,
-bookings never overlap, and each post carries its own time zone. The web app
-plays the Alexa+ conversation in any browser. `npm run check:release` confirms
-that the hosted endpoint runs this exact commit. [Validation](docs/VALIDATION.md)
-lists every check; [the campus pilot plan](docs/USER_VALIDATION.md) is the next step.
+**Market:** set up for the University of Washington campus in Seattle (U District,
+Capitol Hill, Fremont, Ballard, Northgate), in US dollars and Pacific time.
 
 ## The idea in one minute
 
@@ -35,48 +31,44 @@ PairUp pairs buyers and sellers directly and does the work in between,
 for things and for services. Both sides post what they have, what they can do,
 or what they need:
 
-- **Things:** "Alexa, sell my TI-84 for $20. I'll take anything above $15." · "Alexa, I need a graphing calculator today, max $18." → "Found it: TI-84 Plus graphing calculator for $18, $2 below asking. Meet-up: UW campus. Should I confirm it?"
-- **Errands and delivery:** "Alexa, find someone to pick up my lunch from the HUB to McCarty Hall by 12:30, $5." → a student already doing lunch runs on campus takes it for $4, and the fee goes to the person who walks.
-- **One-time jobs:** "Alexa, get me a helper for the event on Saturday 2-6pm, budget $10 an hour." → "Found someone: Priya can do it for $10 an hour, $40 for 4 hours."
+- **Things:** "Sell my TI-84 for $20. I'll take anything above $15." · "I need a graphing calculator today, max $18." → "Found it: TI-84 Plus graphing calculator for $18, $2 below asking. Meet-up: UW campus. Should I confirm it?"
+- **Errands and delivery:** "Find someone to pick up my lunch from the HUB to McCarty Hall by 12:30, $5." → a student already doing lunch runs on campus takes it for $4, and the fee goes to the person who walks.
+- **One-time jobs:** "Get me a helper for the event on Saturday 2-6pm, budget $10 an hour." → "Found someone: Priya can do it for $10 an hour, $40 for 4 hours."
 
-Neither side ever sees the other's limit. Our MCP server understands both
+Neither side ever sees the other's limit. The MCP server understands both
 requests, pairs each request with the best-fitting offer of the same kind,
-settles the price and records the deal; Alexa+ is the voice and the agent; each
-person just says yes or no.
+settles the price and records the deal; the person's AI agent holds the
+conversation; each person just says yes or no.
 
 ## Why it matters
 
-- **Faster and cheaper to buy what you need.** One sentence reaches the person
+- **Faster and cheaper.** One sentence reaches the person
   nearby who has it, and the deal closes the same day at a hand-off point. A $20
   TI-84 sells for $18: the seller keeps all $18, where a resale site's 13–20%
   commission would leave $16–17 after the buyer paid $20 plus shipping.
-- **Make personal business great.** 72.9 million Americans already earn on their own,
+- **A small business in one sentence.** 72.9 million Americans already earn on their own,
   and 30% of adults under 30 have done gig work. On PairUp, opening a small
   business takes one sentence ("I do lunch runs from the HUB, $4"), the price is
   the seller's, the full price reaches the seller, and ratings and learned routines bring
   customers back.
-- **C2C in the future.** Personal agents will buy and sell for people. PairUp is
-  where they meet: any MCP agent connects, an open-source rule sets every price,
-  and every deal ends with a human yes.
+- **Open to any personal agent.** Any MCP agent connects, an open-source rule
+  sets every price, and every deal ends with a person's yes.
 - **Built for the hard deals.** A one-of-a-kind item, a one-off job, a need nobody
   else lists: two private limits set the price, and an open request waits for the
   right person.
 
 The seller always keeps the full price. PairUp earns from optional protected
 online payment (a small buyer fee, held until the hand-off), paid agent access,
-community licenses and Amazon referrals. Details: [docs/SUBMISSION.md](docs/SUBMISSION.md#business-model).
+community licenses and Amazon referrals. Details: [the business case](research/PairUp-Business-Case.pdf).
 
 Households hold about $3,000–4,000 of resellable items each, and 80% of discarded
-furniture goes to landfill. One UW campus alone could move about $1.9 million a
-year between students (model). Evidence, sources and the model's inputs:
+furniture goes to landfill. Evidence, sources and the model's inputs:
 [research/](research/README.md) (the [business case PDF](research/PairUp-Business-Case.pdf), the [short read](research/IMPACT_PLAIN.md), the [full evidence](research/IMPACT.md) and [the papers](research/LITERATURE.md)). The range of markets and one student's year:
 [docs/USE_CASES.md](docs/USE_CASES.md).
 
 ## How a price is set: no haggling
 
-Agents don't bargain with each other here. Turn-by-turn haggling costs model
-calls and seconds on every deal, and a model can be talked into revealing a
-limit. One deterministic rule settles every deal instead, in
+The rule lives in
 [pairing-core](https://github.com/rairurairu/pairing-core) (Rust compiled to WebAssembly):
 
 - **The asking price is public.** A budget at or above it pays the ask.
@@ -96,14 +88,14 @@ limit. One deterministic rule settles every deal instead, in
 **Price check.** A price far from what similar things go for gets a "did you
 mean…?" before it is posted: a $1 iPhone, a minimum misheard as $1, a budget
 heard as $180 for an $18 calculator. The typical range comes from reference
-prices (curated demo estimates in this prototype), or from the market's own confirmed
+prices (curated estimates for the UW market), or from the market's own confirmed
 trades. Those trades are counted so that staged ones barely move the range: one
 vote per seller, at least three independent sellers and buyers, accounts older
 than a week, a median-based range. A buyer who is offered something far below
 the usual price hears a safety note. The check never sets or blocks a price;
 it only asks.
 
-## Getting better every day
+## Learning from outcomes
 
 Every proposed deal records what the engine saw (relevance, same area,
 urgency, delivery offered, pre-approved seller, condition margin, price against
@@ -120,10 +112,10 @@ is mutual confirmation: both people said yes.
 `npm run simulate` runs the real engine on simulated buyers who prefer nearby,
 delivered and pre-approved offers; the engine is never told. Over 12 simulated
 days the learned ranking closed 77% of its proposals against 59% for the
-control, and it named delivery and same area as the main drivers. The simulated
-buyers make this a test of the learning loop itself; the campus pilot measures real people.
+control, and it named delivery and same area as the main drivers. The buyers
+are simulated, so this tests the learning loop itself; the campus pilot will measure real people.
 
-## A helper must fit the time
+## Service scheduling
 
 Service requests accept natural schedules such as `Saturday 2-6pm`, or exact
 `starts_at` / `ends_at` timestamps with offsets. Each post has an IANA `time_zone`
@@ -140,9 +132,9 @@ phrases such as `evenings`, missing duration or unsupported exceptions stay
 offer. Deadline-only errands cannot prove how long the work takes. Ambiguous DST
 times require an explicit offset. See [the scheduling contract](docs/TOOL_CONTRACT.md#service-scheduling).
 
-## Knows what you need
+## Suggestions
 
-PairUp learns regular requests from your own history and offers them shortly before they are due. Bee to-dos, need snippets and phone arrival signals can suggest an errand or item. The For you dock above the composer shows one suggestion at a time, with Find it (Ask now when the budget is known), Not now or Forget. The Devices panel connects a watch, Bee or phone; /watch/ provides a compact voice view. See [Apple Watch](docs/APPLE_WATCH.md) and [Bee](docs/BEE.md). `npm run seed -- --lifestyle` adds three weeks of labelled demo lunch runs (the HUB → McCarty Hall, about $4, around 12:15) for `u_tony`.
+PairUp learns regular requests from your own history and offers them shortly before they are due. Device context can also suggest an errand or item: to-dos and need snippets through the Bee bridge, and phone arrival signals. The For you dock above the composer shows one suggestion at a time, with Find it (Ask now when the budget is known), Not now or Forget. The Devices panel issues device tokens for a watch, a phone or the Bee bridge; /watch/ provides a compact voice view. The included Bee replay uses labelled sample data. See [Apple Watch](docs/APPLE_WATCH.md) and [Bee](docs/BEE.md). `npm run seed -- --lifestyle` adds three weeks of labelled sample lunch runs (the HUB → McCarty Hall, about $4, around 12:15) for `u_tony`.
 
 Lifestyle code: src/market/lifestyle.ts and context.ts; device tokens: src/auth/devices.ts and src/http/devices.ts; voice loop: src/agent/runner.ts; browser: src/web/watch.ts and lifestyle-ui.ts; Bee bridge: scripts/bee-bridge.ts.
 
@@ -155,7 +147,8 @@ PairUp reads the point device's Event History through the Ring Partner API
 (`api.amazonvision.com`) and accepts HMAC-signed Ring webhooks at
 `POST /api/ring/webhook`. When Ring has confirmed both arrivals, the deal card
 shows "both here". PairUp keeps only the event type and time, for 24 hours, and
-never requests video. The points in `data/pairup-points.json` are demo data.
+never requests video. The integration is exercised with the Ring Playground and
+signed simulated webhooks; the points in `data/pairup-points.json` are sample data.
 
 | Variable | Use |
 |---|---|
@@ -167,7 +160,7 @@ never requests video. The points in `data/pairup-points.json` are demo data.
 
 ```bash
 npm run ring:probe     # lists your Ring devices and recent events, prints the RING_POINT_DEVICES line
-npm run ring:simulate  # sends a signed demo Ring webhook to the local server
+npm run ring:simulate  # sends a signed test Ring webhook to the local server
 ```
 
 Code: src/ring/ (client, webhook), src/market/points.ts. Details:
@@ -175,7 +168,7 @@ Code: src/ring/ (client, webhook), src/market/points.ts. Details:
 
 ## Delivery
 
-Item deals change hands at an Amazon Hub point, or the buyer can have the item delivered. The deal card shows "Deliver to my locker" with the fee, and a buyer can say "deliver it" or "send it to my locker". The seller drops it at an Amazon Hub Counter, the buyer collects it from an Amazon Hub Locker with a pickup code, and neither sees the other's address. The price stays the settled one; the fee is added to the total. See [Delivery](docs/DELIVERY.md).
+Item deals change hands at an Amazon Hub point, or the buyer can have the item delivered. The deal card shows "Deliver to my locker" with the fee, and a buyer can say "deliver it" or "send it to my locker". The deal routes the item from an Amazon Hub Counter near the seller to an Amazon Hub Locker near the buyer, and neither sees the other's address. Hub points and fees are sample data, as with PairUp Points. The price stays the settled one; the fee is added to the total. See [Delivery](docs/DELIVERY.md).
 
 ## Run it (2 minutes, no database or AWS needed)
 
@@ -183,7 +176,7 @@ Item deals change hands at an Amazon Hub point, or the buyer can have the item d
 npm install
 npm run reset        # create tables + load seed listings
 npm start            # web app on http://127.0.0.1:3000/, MCP server at /mcp, operations dashboard at /dashboard/
-npm run smoke        # (second terminal) plays the TI-84 demo over real MCP
+npm run smoke        # (second terminal) plays the TI-84 deal end to end over real MCP
 npm run check:release # read-only comparison of the running release and this checkout
 npm test             # 175 unit + end-to-end tests (in-memory Postgres + pgvector)
 npm run simulate     # the learning loop on a simulated market, day by day
@@ -199,7 +192,8 @@ See [.env.example](.env.example).
 
 `/app/` is a complete PairUp client for phones, laptops and smart displays:
 talk or type, see each offer as a card, and confirm or decline with a tap.
-It works the way Alexa+ works with an MCP server:
+It uses the MCP server the way a voice assistant such as Alexa+ would, so it
+simulates the Alexa+ conversation in any browser:
 
 - **It is an MCP host.** The browser runs a real MCP client: `tools/list` to
   discover tools, `tools/call` over Streamable HTTP with the signed-in user's
@@ -211,8 +205,8 @@ It works the way Alexa+ works with an MCP server:
   when `AI_MODE=bedrock` and a model is set, otherwise an offline planner that
   covers the whole voice flow. Either way a deal is only confirmed after the
   user's explicit yes.
-- **Sign-in** is OAuth 2.1 with PKCE as a public client (`AUTH_MODE=oauth`) with
-  Login with Amazon. Local development and the labelled judge demo use a name and
+- **Sign-in** is OAuth 2.1 with PKCE as a public client (`AUTH_MODE=oauth`) and
+  supports Login with Amazon. Local development and the hosted app use a name and
   a passcode that the first sign-in with that name sets.
 - **Offers that arrive while you're away** show up as a badge and a card, and are
   read out when voice is on.
@@ -224,7 +218,7 @@ typing works everywhere.
 
 ```mermaid
 flowchart TB
-  U[People who need, have or can do something] -- voice --> A[Alexa+<br/>interface + agent]
+  U[People who need, have or can do something] -- "voice or text" --> A[AI agent<br/>web app, Strands agent or any MCP host]
   A -- "MCP tools (Streamable HTTP)" --> S
   subgraph S["PairUp MCP server"]
     I[Intent extraction<br/>Bedrock LLM] --> P[Pairing engine<br/>runs on every post, both sides]
@@ -235,14 +229,14 @@ flowchart TB
     N --> D[Proposed deal<br/>both sides confirm]
   end
   S --> DB[(Postgres + pgvector<br/>users · offers · requests · deals · events)]
-  B[Bee context] -. intent enrichment .-> I
+  B[Device context<br/>Bee bridge, phone, watch] -. intent enrichment .-> I
 ```
 
 | Layer | Role |
 |---|---|
-| Alexa+ | Interface and agent: conversation, confirmation |
+| AI agent (any MCP host) | Interface and agent: conversation, confirmation. The web app is one; it simulates the Alexa+ conversation |
 | MCP server (this repo) | Pairing intelligence: posts, matching, settlement, price checks, learning, deals |
-| Bee | Ambient context → proactive buy requests |
+| Device context (optional) | Ambient context → proactive buy requests |
 
 ## MCP tools
 
@@ -281,11 +275,11 @@ without a human wiring it up:
 
 | | |
 |---|---|
-| **Connect without setup** | Claude, ChatGPT, Cursor or a Strands agent connects to the hosted `/mcp` on its own: a Client ID Metadata Document (MCP 2025-11-25) or dynamic registration (RFC 7591), then a consent screen naming the client and Login with Amazon. Tokens refresh with rotation and revoke at `/oauth/revoke` (RFC 7009). [docs/TOOL_CONTRACT.md](docs/TOOL_CONTRACT.md#connecting-a-client) |
+| **Connect without setup** | Any MCP client that follows the 2025-11-25 authorization spec connects to the hosted `/mcp` on its own: a Client ID Metadata Document (MCP 2025-11-25) or dynamic registration (RFC 7591), then a consent screen that names the client before sign-in. Tokens refresh with rotation and revoke at `/oauth/revoke` (RFC 7009). [docs/TOOL_CONTRACT.md](docs/TOOL_CONTRACT.md#connecting-a-client) |
 | **Agent Skill** | [skills/pairup/SKILL.md](skills/pairup/SKILL.md), in the open SKILL.md format and served at `/skills/pairup/SKILL.md`: which tool for which sentence, how to read a deal, the rules, error codes, a worked example |
 | **Server card** | `/.well-known/mcp/server-card.json`: endpoint, auth, instructions, and every tool, prompt and view with schemas, read from the live server |
 | **llms.txt** | `/llms.txt`: the same in Markdown, with the rules an agent must follow |
-| **Prompts** | `sell_something`, `find_something`, `whats_new` show up as starters in Claude, VS Code and the MCP Inspector |
+| **Prompts** | `sell_something`, `find_something`, `whats_new` show up as starters in any host that supports MCP prompts, such as the MCP Inspector |
 | **Safe retries** | `idempotency_key` on every write; a retry returns the first result |
 | **Speakable errors** | Every result and error has a `say` sentence; errors an agent can act on carry a `code` |
 | **Strands + AgentCore** | [agents/agentcore](agents/agentcore): a Strands Agents voice agent on Amazon Bedrock AgentCore Runtime whose only tools are this server's, with a code-level guard that blocks `confirm_deal` until the user says yes |
@@ -296,20 +290,19 @@ without a human wiring it up:
   role (no access keys), encrypted EBS with daily snapshots, auto-recovery, deploys
   through Systems Manager with atomic release switching. [docs/DEPLOY.md](docs/DEPLOY.md)
 - **Observability:** JSON logs in CloudWatch with a request id per call (`X-Request-Id`),
-  CloudWatch metrics for MCP latency, tool failures and 5xx, alarms with email alerts,
+  CloudWatch metrics for MCP latency, tool failures and 5xx, alarms published to an SNS topic,
   Embedded Metric Format for per-tool latency.
 - **Reliability:** `/ready` checks the database before traffic switches; graceful
   shutdown drains calls in flight; holds expire and re-pair on a timer; Bedrock
   intent/agent failures fall back to local parsing and the offline planner.
-- **Safety:** OAuth 2.1 with PKCE, Login with Amazon as the identity provider,
+- **Safety:** OAuth 2.1 with PKCE (Login with Amazon supported as an identity provider),
   token revocation, SSRF-guarded client metadata fetches, Origin validation, CDN-only origin, per-caller rate
   limits, per-user posting limits, bounded inputs, private limits redacted in one
   place and leak-tested.
 - **Trust and safety:** a prohibited and restricted items and services policy
   checked before every post, reports with a review queue on the dashboard, and
   ratings that feed each person's track record.
-- **Speed:** `npm run bench` measures real MCP tool latency and throughput. See the measured local sample below.
-  Historical 0.6.0 benchmark before the scheduling changes (2026-10-20, Windows, Node v24.14.1, mock AI, PGlite, real HTTP MCP, 2 workers × 5 rounds, fresh users, 40 calls, zero errors): post_offer p50/p95/p99 42/331/331 ms; post_request 84/126/126 ms; find_matches 20/68/68 ms; confirm_deal 27/36/36 ms. Throughput 25.7 calls/s. This small local sample includes cold calls; measure Bedrock and the deployed network separately with `npm run bench`.
+- **Speed:** `npm run bench` measures real MCP tool latency and throughput.
 - **Tests:** unit and integration checks over MCP/HTTP, OAuth, schemas, privacy,
   idempotency, schedule compatibility, overlapping bookings and concurrent approvals;
   PairUp Points with Ring (client, presence rule, webhook signature, two-person check-in);
@@ -351,36 +344,41 @@ public/app/              web app shell + built bundle (npm run build:web)
 public/mcp-apps/         built single-file MCP Apps view
 public/dashboard/        operations dashboard
 data/policy.json         prohibited and restricted items and services
-data/seed-listings.json  seed market: 162 posts from 22 people, items and services; demo Amazon Hub points per area
+data/seed-listings.json  seed market: 162 posts from 22 people, items and services; sample Amazon Hub points per area
 data/trade-in-categories.json  categories Amazon Trade-In takes
-data/pairup-points.json  demo PairUp Points (Ring hand-off spots)
+data/pairup-points.json  sample PairUp Points (Ring hand-off spots)
 skills/pairup/     the Agent Skill (SKILL.md)
 agents/agentcore/        Strands Agents voice agent for Amazon Bedrock AgentCore Runtime
-scripts/                 seed, smoke test, latency benchmark (bench.ts), Ring probe and webhook simulator, add-on assets
+scripts/                 seed, smoke test, latency benchmark (bench.ts), Ring probe and webhook simulator, asset builds
 research/                impact evidence, papers, plain-language summary
-docs/                    use cases, contract, design system, award plan, Alexa+ setup, deploy, demo script, submission, friction log
+docs/                    use cases, tool contract, design system, deploy, validation, hackathon submission materials
 vendor/pairing-core/     prebuilt module from https://github.com/rairurairu/pairing-core (refresh: node scripts/sync-pairing-core.mjs)
 Dockerfile, deploy/      container image, AWS CloudFormation + deploy scripts, Lightsail config
 ```
 
-## Plan
-
-See [docs/AWARD_GAPS.md](docs/AWARD_GAPS.md) for the award analysis and the day-by-day plan.
-
-## License
-
-MIT — see [LICENSE](LICENSE).
-
-## Spec conformance and recording preparation
+## Spec conformance
 
 - MCP 2025-11-25 Streamable HTTP: foreign Origin returns 403; unsupported protocol versions return 400; POST requires JSON and SSE Accept types and exactly one message. Arrays are rejected with 400/-32600.
 - Initialized sessions support GET SSE and DELETE; unknown or expired sessions return 404. Stateless GET/DELETE returns 405. The browser reinitializes after session loss and retains write retry keys.
 - Agent Skill: real YAML parsing validates allowed fields, directory/name agreement, description limits, metadata and references; a live tool-list test checks coverage. The format has no standard HTTP discovery path; the documented /skills endpoint remains in the server card and llms.txt.
 - MCP Apps: SDK initialization/auto-resize, host theme variables/fonts, safe-area padding, inline/fullscreen/pip layout and bounded initialization cleanup. Audited with the official MCP Apps Agent Skill.
-- Official MCP Inspector headless tools/list succeeds locally: zero schema portability errors, 168 portability warnings across 18 tools. Focused spec tests supply additional coverage. See [resource audit](docs/RESOURCE_AUDIT.md) and [validation](docs/VALIDATION.md).
+- Official MCP Inspector headless tools/list succeeds locally: zero schema portability errors. Focused spec tests supply additional coverage. See [resource audit](docs/RESOURCE_AUDIT.md) and [validation](docs/VALIDATION.md).
 
-The [two-device demo](public/app/demo.html) uses separate sessions and current UW users. For local previews, append ?theme=light or ?theme=dark to /app/; the watch screen keeps its dark palette. [Recording checklist](docs/RECORDING_CHECKLIST.md), [submission answers](docs/SUBMISSION.md), [per-tool feedback](docs/PRODUCT_FEEDBACK.md), [friction log](docs/FRICTION_LOG.md) and [feature requests](docs/FEATURE_REQUESTS.md) cover the form fields.
+For local previews, append ?theme=light or ?theme=dark to /app/; the watch screen keeps its dark palette. The [two-device page](public/app/demo.html) runs both sides of a deal in separate sessions.
 
-Ring references: [canonical starter](https://github.com/AmazonAppDev/ring-api-helloworld), [API](https://developer.amazon.com/docs/ring/api-documentation.html), [UX guide](https://developer.amazon.com/docs/ring/ux-design-guide.html). The client uses the same origin/Bearer/JSON:API model and adds bounded retries, pagination and signed request-id dedupe. Local simulated webhooks are labelled rehearsal data.
+Ring references: [canonical starter](https://github.com/AmazonAppDev/ring-api-helloworld), [API](https://developer.amazon.com/docs/ring/api-documentation.html), [UX guide](https://developer.amazon.com/docs/ring/ux-design-guide.html). The client uses the same origin/Bearer/JSON:API model and adds bounded retries, pagination and signed request-id dedupe.
 
-Release `v0.8.0` is pushed and deployed at `6895b52`; public commit, asset and readiness checks pass. [Live evidence](docs/EVIDENCE.md) records the AWS runtime results. The collector requires successful Bedrock inference, checks deployed commit/assets and redacts the token. Recollect after application changes with `npm run evidence -- --url <public-origin>` and `PAIRUP_TOKEN` in the environment; add `--agentcore-arn` for the hosted runtime. [Bee data sourcing](docs/BEE_DATA_SOURCES.md) records why a verified real Bee source is still required.
+## Release
+
+Release `v0.8.0` is deployed at `6895b52`: one design across the app, cards, watch and dashboard; Ring arrivals on the watch; audited transport, Skill and SDK integrations. `npm run check:release` confirms that the hosted endpoint runs this exact commit; public commit, asset and readiness checks pass. [Validation](docs/VALIDATION.md) lists every check, and [the campus pilot plan](docs/USER_VALIDATION.md) is the next step. [Live evidence](docs/EVIDENCE.md) records the AWS runtime results. The collector requires successful Bedrock inference, checks deployed commit/assets and redacts the token. Recollect after application changes with `npm run evidence -- --url <public-origin>` and `PAIRUP_TOKEN` in the environment; add `--agentcore-arn` for the hosted runtime.
+
+## Amazon Developer Hackathon 2026
+
+PairUp was built for the Amazon Developer Hackathon 2026 (Alexa+ track, with the
+AWS Builder and Open Source mini challenges). Notes on the Amazon developer tools:
+[per-tool feedback](docs/PRODUCT_FEEDBACK.md), [friction log](docs/FRICTION_LOG.md),
+[feature requests](docs/FEATURE_REQUESTS.md).
+
+## License
+
+MIT — see [LICENSE](LICENSE).
